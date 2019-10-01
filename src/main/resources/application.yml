@@ -1,0 +1,11 @@
+swagger:
+  enable: true
+
+spring:
+  security:
+    user:
+      name: admin
+      password: admin
+
+jwt:
+  secret: "secret"
