@@ -1,18 +1,26 @@
 package com.github.abigail830.jwtdemo.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class ApplicationUser {
 
+    @Column(name = "username", unique = true, nullable = false)
+    private String username;
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String username;
-    private String password;
+
+    public ApplicationUser(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public ApplicationUser() {
+    }
 
     public long getId() {
         return id;

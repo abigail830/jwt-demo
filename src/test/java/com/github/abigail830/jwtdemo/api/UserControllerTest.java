@@ -1,5 +1,6 @@
 package com.github.abigail830.jwtdemo.api;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +14,7 @@ import static org.junit.Assert.*;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
+@Ignore
 public class UserControllerTest {
 
     TestRestTemplate testRestTemplate;
