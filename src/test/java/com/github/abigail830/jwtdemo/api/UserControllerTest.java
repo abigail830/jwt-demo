@@ -22,7 +22,7 @@ public class UserControllerTest {
     public void test_hello_should_goto_login_page_when_not_login() {
         testRestTemplate = new TestRestTemplate();
         final ResponseEntity<String> result = testRestTemplate
-                .exchange("http://localhost:8080/hello", HttpMethod.GET, null, String.class);
+                .exchange("http://127.0.0.1:8080/hello", HttpMethod.GET, null, String.class);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertFalse(result.getBody().contains("Hello World"));

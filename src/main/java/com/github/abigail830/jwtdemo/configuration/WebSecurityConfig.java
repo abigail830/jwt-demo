@@ -1,50 +1,56 @@
 package com.github.abigail830.jwtdemo.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
+import com.github.abigail830.jwtdemo.application.UserDetailsServiceImpl;
+import com.github.abigail830.jwtdemo.filter.JWTAuthenticationFilter;
+import com.github.abigail830.jwtdemo.filter.JWTAuthorizationFilter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static com.github.abigail830.jwtdemo.infrastructure.Constant.REGISTER_URL;
-import static com.github.abigail830.jwtdemo.infrastructure.Constant.SIGN_UP_URL;
 
-@Configuration
-
+@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    private UserDetailsServiceImpl userDetailsService;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .inMemoryAuthentication()
-                .withUser("admin")
-                .password(bCryptPasswordEncoder.encode("admin"))
-                .roles("ADMIN")
-                .and()
-                .withUser("user")
-                .password(bCryptPasswordEncoder.encode("password"))
-                .roles("USER");
+    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService,
+                             BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userDetailsService = userDetailsService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().
-                and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/swagger-ui.html",
-                        "/swagger-resources/**",
-                        "/webjars/**",
-                        "/configuration/security",
-                        "/configuration/ui",
-                        "/v2/api-docs",
-                        "/hello").permitAll()
-                .antMatchers(HttpMethod.POST, SIGN_UP_URL, REGISTER_URL).permitAll()
-//                .antMatchers("/admins").hasRole("ADMIN")
+        http.cors().and().csrf().disable()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, REGISTER_URL).permitAll()
                 .anyRequest().authenticated()
-                .and().formLogin();
+                .and()
+                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                // this disables session creation on Spring Security
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        return source;
     }
 }

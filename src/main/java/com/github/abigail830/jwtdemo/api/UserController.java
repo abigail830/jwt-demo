@@ -17,10 +17,10 @@ public class UserController {
         userApplService.register(user);
     }
 
-    @PostMapping("/login")
-    public void login(@RequestBody ApplicationUser user) {
-        userApplService.saveUserLoginInfo(user);
-    }
+//    @PostMapping("/login")
+//    public void login(@RequestBody ApplicationUser user) {
+//        userApplService.saveUserLoginInfo(user);
+//    }
 
     @GetMapping
     public ApplicationUser findUser(@RequestParam String userName) {
