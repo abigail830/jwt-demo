@@ -1,6 +1,7 @@
 package com.github.abigail830.jwtdemo.interceptor;
 
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.github.abigail830.jwtdemo.infrastructure.HttpHelper;
 import com.github.abigail830.jwtdemo.infrastructure.JWTAuth0Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         Method method = handlerMethod.getMethod();
 
         if (method.isAnnotationPresent(UserLoginToken.class)) {
+            final String bodyString = HttpHelper.getBodyString(request);
+            System.out.println("body is: " + bodyString);
+
             final String usename = request.getHeader(HEADER_USERNAME);
             if (usename != null) {
                 try {
