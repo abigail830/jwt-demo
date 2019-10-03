@@ -1,13 +1,13 @@
 swagger:
   enable: true
 
-#spring:
+spring:
+  datasource:
+    url: jdbc:h2:mem:JWTDEMO;DB_CLOSE_DELAY=-1;MODE=MYSQL
 #  security:
 #    user:
 #      name: admin
 #      password: admin
-spring:
-  datasource:
-    url: jdbc:h2:mem:JWTDEMO;DB_CLOSE_DELAY=-1;MODE=MYSQL
+
 jwt:
   secret: "secret"

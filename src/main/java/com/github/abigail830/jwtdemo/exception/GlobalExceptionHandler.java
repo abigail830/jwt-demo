@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 @Controller
-public class ExceptionController {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = BizException.class)
     public ExceptionResponse handleBizException(BizException bizException) {

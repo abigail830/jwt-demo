@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserAuditTrailRepo extends JpaRepository<UserAuditTrail, Long> {
-    UserAuditTrail findByUsername(String username);
+//    UserAuditTrail findByUsername(String username);
 }
