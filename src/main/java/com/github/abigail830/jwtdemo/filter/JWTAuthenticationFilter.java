@@ -3,7 +3,6 @@ package com.github.abigail830.jwtdemo.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.abigail830.jwtdemo.domain.ApplicationUser;
 import com.github.abigail830.jwtdemo.infrastructure.JWTAuth0Util;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,14 +22,12 @@ import static com.github.abigail830.jwtdemo.infrastructure.Constant.TOKEN_PREFIX
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    @Autowired
-    JWTAuth0Util jwtAuth0Util;
-
     private AuthenticationManager authenticationManager;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
@@ -55,8 +52,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
-
-        final String token = jwtAuth0Util.sign(((User) auth.getPrincipal()).getUsername());
+        final String username = ((User) auth.getPrincipal()).getUsername();
+        final String token = new JWTAuth0Util().sign(username);
         res.addHeader(HEADER_AUTHORIZATION, TOKEN_PREFIX + token);
     }
 }

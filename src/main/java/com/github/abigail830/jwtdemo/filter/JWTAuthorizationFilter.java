@@ -2,7 +2,6 @@ package com.github.abigail830.jwtdemo.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.abigail830.jwtdemo.infrastructure.JWTAuth0Util;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,9 +18,6 @@ import static com.github.abigail830.jwtdemo.infrastructure.Constant.HEADER_AUTHO
 import static com.github.abigail830.jwtdemo.infrastructure.Constant.TOKEN_PREFIX;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-
-    @Autowired
-    JWTAuth0Util jwtAuth0Util;
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -48,7 +44,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader(HEADER_AUTHORIZATION);
         if (token != null) {
             // parse the token.
-            final DecodedJWT decode = jwtAuth0Util.verify(token);
+            final DecodedJWT decode = new JWTAuth0Util().verify(token.replace(TOKEN_PREFIX, ""));
             String user = decode.getSubject();
 
             if (user != null) {
